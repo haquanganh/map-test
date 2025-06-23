@@ -1,0 +1,510 @@
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.map {
+  position: relative;
+  width: 100%;
+
+  &__reloadLocation {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+
+    &:hover {
+      background: rgba(255, 255, 255, 1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.centerCrosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+}
+
+.crosshairHorizontal {
+  position: absolute;
+  width: 40px;
+  height: 3px;
+  background-color: #ff4444;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 6px rgba(0, 0, 0, 0.8);
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.crosshairVertical {
+  position: absolute;
+  width: 3px;
+  height: 40px;
+  background-color: #ff4444;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 6px rgba(0, 0, 0, 0.8);
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.addMarkerButton {
+  position: absolute;
+  bottom: 80px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 12px 35px rgba(59, 130, 246, 0.6);
+  }
+
+  &:active {
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+.coordinatesDisplay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Modal Styles - Modern Design
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  max-width: 420px;
+  width: 90%;
+  max-height: 85vh;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #374151;
+    transform: scale(1.1);
+  }
+}
+
+.modalForm {
+  padding: 0 24px 24px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+    letter-spacing: -0.025em;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    background: #ffffff;
+
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      background: #ffffff;
+    }
+
+    &:hover:not(:focus) {
+      border-color: #cbd5e1;
+    }
+
+    &[type='number'] {
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.readOnlyField {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #f1f5f9;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 500;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+
+  > div {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.deleteButton {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+
+  &:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.cancelButton {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+
+  &:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.page {
+  margin-top: 100px;
+}
+
+// Selection-specific styles - Modern & Compact Design
+.selectionPopup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px; // Reduced from 10px to 6px
+  min-width: 160px; // Reduced from 200px to 160px
+  padding: 2px 0;
+}
+
+.popupContent {
+  flex: 1;
+
+  strong {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #1e293b;
+  }
+
+  small {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-top: 1px;
+    display: block;
+  }
+}
+
+.popupActions {
+  flex-shrink: 0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px; // Reduced from 6px to 4px
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 5px; // Reduced from 4px 6px
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+.markerCheckbox {
+  margin: 0;
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  accent-color: #3b82f6;
+}
+
+.checkboxText {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.clickableTitle {
+  cursor: pointer;
+  color: #3b82f6;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  padding: 3px 6px;
+  margin: -3px -6px;
+  font-weight: 600;
+  text-decoration: underline;
+  color: #1d4ed8 !important;
+  transform: translateY(-1px);
+  font-style: italic;
+}
+
+// Always visible popup styling - Modern & Compact
+.leaflet-popup {
+  &.leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    min-width: 150px; // Reduced from 180px
+    max-width: 220px; // Reduced from 280px
+  }
+
+  .leaflet-popup-content {
+    margin: 8px 10px; // Reduced from 10px 14px
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+
+    strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    small {
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+  }
+
+  .leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
