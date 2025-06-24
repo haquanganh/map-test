@@ -45,6 +45,7 @@ interface MapProps {
   height?: string | number;
   showRefreshButton?: boolean;
   showZoomControl?: boolean;
+  currentLocation?: [number, number] | null;
   onAddMarker?: (position: LatLngExpression) => void;
   onUpdateMarker?: (id: string, data: MarkerFormData) => void;
   onDeleteMarker?: (id: string) => void;
@@ -266,13 +267,16 @@ const MapCenterTracker = ({
 const CustomMap = ({
   markers,
   showZoomControl = true,
+  currentLocation,
   onAddMarker,
   onUpdateMarker,
   onDeleteMarker,
 }: MapProps) => {
   const mapRef = useRef<Map>(null);
   const markersRef = useRef<LeafletMarker[]>([]);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([51.505, -0.09]);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(
+    currentLocation || [51.505, -0.09]
+  );
   const [selectedMarker, setSelectedMarker] = useState<MarkerItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -335,13 +339,13 @@ const CustomMap = ({
   return (
     <div className={styles.mapWrapper}>
       <MapContainer
-        center={[51.505, -0.09]}
+        center={currentLocation || [51.505, -0.09]}
         scrollWheelZoom
         style={{ height: '100%', width: '100%' }}
         className={styles.map}
         ref={mapRef}
         zoomControl
-        zoom={5}
+        zoom={currentLocation ? 13 : 5}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

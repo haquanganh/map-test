@@ -35,6 +35,7 @@ interface MarkerFormData {
 interface SelectionMapProps {
   markers: MarkerItem[];
   selectedMarkers: string[];
+  currentLocation?: [number, number] | null;
   onMarkerSelection: (markerId: string, isSelected: boolean) => void;
   onUpdateMarker?: (id: string, data: MarkerFormData) => void;
   onDeleteMarker?: (id: string) => void;
@@ -144,6 +145,7 @@ const MarkerModal = ({
 const SelectionMap = ({
   markers,
   selectedMarkers,
+  currentLocation,
   onMarkerSelection,
   onUpdateMarker,
   onDeleteMarker,
@@ -183,13 +185,13 @@ const SelectionMap = ({
   return (
     <div className={styles.mapWrapper}>
       <MapContainer
-        center={[51.505, -0.09]}
+        center={currentLocation || [51.505, -0.09]}
         scrollWheelZoom
         style={{ height: '100%', width: '100%' }}
         className={styles.map}
         ref={mapRef}
         zoomControl
-        zoom={13}
+        zoom={currentLocation ? 13 : 13}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

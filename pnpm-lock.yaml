@@ -23,6 +23,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
+      react-geolocated:
+        specifier: ^4.3.0
+        version: 4.3.0(react@19.1.0)
       react-leaflet:
         specifier: ^5.0.0
         version: 5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -811,6 +814,11 @@ packages:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
     peerDependencies:
       react: ^19.1.0
+
+  react-geolocated@4.3.0:
+    resolution: {integrity: sha512-jj3x45VACcHHvSNWqWHf0f60V12pQDPIH6HuFyJi+BmndQ/dlE+vR0R2Eis+BYnwZPTlaEQ/ANmJjuUPH3Lxsg==}
+    peerDependencies:
+      react: '>= 16.8.0 < 20.0.0'
 
   react-leaflet@5.0.0:
     resolution: {integrity: sha512-CWbTpr5vcHw5bt9i4zSlPEVQdTVcML390TjeDG0cK59z1ylexpqC6M1PJFjV8jD7CF+ACBFsLIDs6DRMoLEofw==}
@@ -1649,6 +1657,10 @@ snapshots:
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
+
+  react-geolocated@4.3.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
 
   react-leaflet@5.0.0(leaflet@1.9.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:

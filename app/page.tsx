@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { type LatLngExpression } from 'leaflet';
 import { MarkerItem } from './custom-map';
+import { useGeolocated } from 'react-geolocated';
 
 const CustomMap = dynamic(() => import('./custom-map'), {
   ssr: false,
@@ -49,6 +50,22 @@ export default function Home() {
   ]);
   const [selectedMarkers, setSelectedMarkers] = useState<string[]>([]);
   const [processedMarkers, setProcessedMarkers] = useState<string[]>([]);
+
+  const {
+    coords,
+    positionError: error,
+    isGeolocationEnabled,
+  } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    userDecisionTimeout: 5000,
+  });
+
+  // Process geolocation coordinates
+  const currentLocation: [number, number] | null = coords
+    ? [coords.latitude, coords.longitude]
+    : null;
 
   const generateId = () =>
     `marker-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -162,6 +179,17 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      {/* Geolocation Status */}
+      {!isGeolocationEnabled && (
+        <div className={styles.locationAlert}>
+          📍 Enable location access to center map at your current position
+        </div>
+      )}
+      {error && (
+        <div className={styles.locationError}>
+          ❌ Location access denied or unavailable
+        </div>
+      )}
       {/* Tab Navigation */}
       <div className={styles.tabContainer}>
         <div className={styles.tabHeader}>
@@ -196,6 +224,7 @@ export default function Home() {
             <div className={styles.mapContainer}>
               <CustomMap
                 markers={markers}
+                currentLocation={currentLocation}
                 onAddMarker={handleAddMarker}
                 onUpdateMarker={handleUpdateMarker}
                 onDeleteMarker={handleDeleteMarker}
@@ -231,6 +260,7 @@ export default function Home() {
                 <SelectionMap
                   markers={markers}
                   selectedMarkers={selectedMarkers}
+                  currentLocation={currentLocation}
                   onMarkerSelection={handleMarkerSelection}
                   onUpdateMarker={handleUpdateMarker}
                   onDeleteMarker={handleDeleteMarker}
@@ -267,6 +297,7 @@ export default function Home() {
                 <SelectionMap
                   markers={markers}
                   selectedMarkers={processedMarkers}
+                  currentLocation={currentLocation}
                   onMarkerSelection={handleProcessMarkerSelection}
                   onUpdateMarker={handleUpdateMarker}
                   onDeleteMarker={handleDeleteMarker}
